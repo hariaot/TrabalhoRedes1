@@ -1,3 +1,10 @@
+<!-- 
+Alunos: Gustavo Palmeira Zaia, Haria Othon Gomes Silva, Vinicius Polachini Mayer Freitas de Jesus.
+Trabalho de Redes 1
+-->
+
+<!-- Inicializacao da pagina web que sera usada como camada do usuario e front end da aplicacao -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,8 +13,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Trabalho Chat/Socket </title>
+    <!-- Iportando bibliotecas usadas na pagina e no socket -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+    <!-- Importando a estilizacao da pagina -->
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -20,35 +29,36 @@
     </form>
 
     <script type="text/javascript">
-        var socket = io(`http://localhost:3000`);
+        var socket = io(`http://localhost:3000`);//conexao com o socket do servidor e inicializacao da comunicacao
 
-        function renderMessage(message){
-            $('.messages').append('<div class="message"><strong>'+ message.author +'</strong>:'+ message.message +'</div>');
+        function renderMessage(message){ //funcao para mostrar as mensagens enviadas e recebidas na caixa de mensagens 
+            $('.messages').append('<div class="message"><strong>'+ message.author +'</strong>: '+ message.message +'</div>');
         }
         
-        socket.on('receivedMessage', function(message){
+        socket.on('receivedMessage', function(message){//funcao usada ao receber a informacao do servidor de que a mensagem foi recebida com sucesso e pode ser repassada para o usuario
             renderMessage(message);
         });
 
-        socket.on('previousMessage', function(messages){
+        socket.on('previousMessage', function(messages){//funcao usada para mostrar as mensagens previamente enviadas e que estao armazenadas no banco de dados (array)
             for(message of messages){
                 renderMessage(message);
             }
         });
-        
-        $('#chat').submit(function (event) {
+
+        $('#chat').submit(function (event) {//ao clickar no botao de submit comeca as acoes de recuperacao de informacoes dos inputs
             event.preventDefault();
             
-            var author = $('input[name=username]').val();
-            var message = $('input[name=message]').val();
+            var author = $('input[name=username]').val();//pegando o nome de usuario 
+
+            var message = $('input[name=message]').val();// pegando a mensagem a ser enviada 
             
-            if (author.length && message.length) {
-                var messageObject = {
+            if (author.length && message.length) {//verificacao se o input tanto do usuario e da mensagem nao e vazio
+                var messageObject = { //criando o objeto messagem 
                     author: author,
                     message: message,
                 };
-                renderMessage(messageObject);
-                socket.emit('sendMessage', messageObject);
+                renderMessage(messageObject); //renderizando a mensagem do usario diratemente no chat
+                socket.emit('sendMessage', messageObject); //comunicando com o servidor e levando o objeto (mensagem e usuario) para o back end
             }
 
 
